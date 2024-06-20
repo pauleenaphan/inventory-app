@@ -7,6 +7,8 @@ var logger = require('morgan');
 var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');
 
+const mongoose = require("mongoose");
+
 var app = express();
 
 // view engine setup
@@ -37,5 +39,19 @@ app.use(function(err, req, res, next) {
   res.status(err.status || 500);
   res.render('error');
 });
+
+// Set up mongoose connection
+mongoose.set("strictQuery", false);
+
+// Load environment variables from .env file
+require('dotenv').config();
+
+const dev_db_url = process.env.DEV_DB_URL;
+const mongoDB = process.env.MONGODB_URI || dev_db_url;
+
+mongoose.connect(mongoDB, { useNewUrlParser: true, useUnifiedTopology: true })
+  .then(() => console.log('MongoDB connected'))
+  .catch(err => console.error('MongoDB connection error:', err));
+
 
 module.exports = app;
