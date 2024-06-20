@@ -4,4 +4,13 @@ html
     title= title
     link(rel='stylesheet', href='/stylesheets/style.css')
   body
+    div(class="container")
+      ul
+        li
+          a(href="/home") Home
+        li 
+          a(href="/home/item") Items
+
+        li 
+          a(href="/home/item/create") Create New Item
     block content
