@@ -3,14 +3,18 @@ html
   head
     title= title
     link(rel='stylesheet', href='/stylesheets/style.css')
+  //nav sidebar with href to each of the routers
   body
     div(class="container")
       ul
         li
           a(href="/home") Home
         li 
-          a(href="/home/item") Items
-
+          a(href="/home/item/get") Items
+        li 
+          a(href="/home/category/get") Categories
         li 
           a(href="/home/item/create") Create New Item
+        li 
+          a(href="/home/category/create") Create new category
     block content

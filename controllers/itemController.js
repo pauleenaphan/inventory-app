@@ -1,5 +1,5 @@
 const Item = require("../models/item");
-const Category = require("../models/catgeory")
+const Category = require("../models/category")
 const { body, validationResult } = require("express-validator");
 const asyncHandler = require("express-async-handler");
 
@@ -9,13 +9,29 @@ exports.index = asyncHandler(async(req, res, next) =>{
     })
 })
 
+//shows the list of items
+exports.item_list = asyncHandler(async (req, res, next) =>{
+    const items = await Item.find({}, "name category")
+        .sort({ name: 1})
+        .populate("category")
+        .exec();
+    
+    res.render("item_list", { title: "Items", item_list: items })
+})
+
+// exports.item_details = asyncHandler(async (req,res, next) =>{
+
+// })
+
 //displays item create form
 exports.item_create_get = asyncHandler(async (req, res, next) =>{
+    //need to get all categories that are in the db so that the user can select a category when making an item
     const allCategories = await Category.find().sort({ name: 1 }).exec();
 
+    //renders the item form
     res.render("item_form", {
         title: "Create new item",
-        // category: allCategories
+        categories: allCategories
     })
 })
 
@@ -30,10 +46,10 @@ exports.item_create_post = [
         .trim()
         .isLength({ min: 1 })
         .escape(),
-    // body("category", "Category must not be empty.")
-    //     .trim()
-    //     .isLength({ min: 1 })
-    //     .escape(),
+    body("category", "Category must not be empty.")
+        .trim()
+        .isLength({ min: 1 })
+        .escape(),
     body("stock", "Stock amount must not be empty")
         .trim()
         .isLength({ min: 1 })
@@ -45,7 +61,7 @@ exports.item_create_post = [
         const item = new Item({
             name: req.body.itemName,
             description: req.body.description,
-            // category: "new c",
+            category: req.body.category,
             stock: req.body.stock
         })
 
@@ -56,15 +72,15 @@ exports.item_create_post = [
             res.render("item_form", {
                 title: "Create new Item",
                 item: req.body,
-                // category: "cateog",
+                categories: allCategories,
                 errors: errors.array()
             })
             return;
         }else{
             //else save the item
             await item.save();
-            // res.redirect(item.url);
-            res.redirect("/home");
+            //redirects user to the items page
+            res.redirect("/home/item/get");
         }
     })
 ]

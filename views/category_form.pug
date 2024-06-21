@@ -1,0 +1,18 @@
+extends layout 
+
+block content 
+    h1= title 
+    
+    form(method="POST")
+        div.formContainer
+            label(for="name") Name of Category: 
+            input(type="text" placeholder="Name of Category" name="categoryName" required)
+        div.formContainer
+            label(for="description") Description: 
+            textarea(placeholder="Description" name="description" required)
+        button.btn.btn-primary(type='submit') Submit
+
+        if errors 
+            ul 
+                for error in errors 
+                    li!= error.msg
