@@ -9,6 +9,26 @@ exports.index = asyncHandler(async(req, res, next) =>{
     })
 })
 
+exports.item_details = asyncHandler(async (req, res, next) => {
+    // Fetch the item and populate its category field
+    const item = await Item.findById(req.params.id).populate("category").exec();
+    console.log("item_details route");
+    if (!item) {
+        // If the item is not found, create an error and pass it to the next middleware
+        const err = new Error("Item not found");
+        err.status = 404;
+        return next(err);
+    }
+
+    console.log("Item:", item);
+
+    // Render the item details view
+    res.render("item_detail", {
+        title: item.name,
+        item: item
+    });
+});
+
 //shows the list of items
 exports.item_list = asyncHandler(async (req, res, next) =>{
     const items = await Item.find({}, "name category")
@@ -19,9 +39,6 @@ exports.item_list = asyncHandler(async (req, res, next) =>{
     res.render("item_list", { title: "Items", item_list: items })
 })
 
-// exports.item_details = asyncHandler(async (req,res, next) =>{
-
-// })
 
 //displays item create form
 exports.item_create_get = asyncHandler(async (req, res, next) =>{
@@ -84,3 +101,21 @@ exports.item_create_post = [
         }
     })
 ]
+
+exports.item_delete_get = asyncHandler(async(req, res, next) =>{
+    const item = await Item.findById(req.params.id).populate("category").exec();
+
+    if(item == null){
+        res.redirect("home/item")
+    }
+
+    res.render(item_delete, {
+        title: item.name,
+        item: item
+    })
+})
+
+exports.item_delete_post = asyncHandler(async(req, res, next) =>{
+    await Item.findByIdAndDelete(req.body.itemid);
+    res.redirect("/home/item");
+})

@@ -1,0 +1,23 @@
+extends layout 
+
+block content 
+    h1= title 
+
+    if item
+        p Description: 
+            | #{item.description}
+
+        p Category: 
+            | #{item.category.name}
+
+        p In Stock: 
+            | #{item.stock}
+
+        hr
+        p 
+            a(href=item.url+'/delete') Delete Item 
+        p 
+            a(href=item.url+'/update') Update Item
+
+    else 
+        p This item does not exist
