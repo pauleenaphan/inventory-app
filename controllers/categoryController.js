@@ -61,3 +61,65 @@ exports.category_create_post = [
         }
     })
 ]
+
+exports.category_delete_get = asyncHandler(async(req, res, next) =>{
+    const category = await Category.findById(req.params.id).exec();
+
+    if(category == null){
+        res.redirect("home/category/get");
+    }
+
+    res.render("category_delete",{
+        title: category.name,
+        category: category
+    })
+})
+
+exports.category_delete_post = asyncHandler(async(req, res, next) =>{
+    await Category.findByIdAndDelete(req.body.categoryid);
+    res.redirect("/home/category/get");
+})
+
+exports.category_update_get = asyncHandler(async(req, res, next) =>{
+    const category = await Category.findById(req.params.id).exec();
+
+    res.render("category_form",{
+        title: "Update Category",
+        category: category,
+    })
+
+
+})
+
+exports.category_update_post = asyncHandler(async(req, res, next) =>{
+    body("categoryName", "Name must not be empty.")
+        .trim()
+        .isLength({ min: 1 })
+        .escape(),
+    body("description", "Description must not be empty.")
+        .trim()
+        .isLength({ min: 1 })
+        .escape()
+        
+    const errors = validationResult(req);
+    const category = new Category({
+        _id: req.params.id, // This is required, or a new ID will be assigned!
+        name: req.body.categoryName,
+        description: req.body.description,
+    });
+
+    if (!errors.isEmpty()) {
+        // There are errors. Render the form again with sanitized values and error messages.
+        res.render('category_form', {
+            title: 'Update Category',
+            category: category,
+            errors: errors.array()
+        });
+        return;
+    } else {
+        // Data from form is valid. Update the record.
+        const updatedCategory = await Category.findByIdAndUpdate(req.params.id, category, {});
+        // Redirect to author detail page.
+        res.redirect(updatedCategory.url);
+    }
+})

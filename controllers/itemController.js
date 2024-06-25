@@ -4,9 +4,16 @@ const { body, validationResult } = require("express-validator");
 const asyncHandler = require("express-async-handler");
 
 exports.index = asyncHandler(async(req, res, next) =>{
-    res.render("index",{
-        title: "Main Page",
-    })
+    const [numItems, numCategories] = await Promise.all([
+        Item.countDocuments({}).exec(),
+        Category.countDocuments({}).exec()
+    ]);
+
+    res.render("index", {
+        title: "Inventory Mangement Homepage",
+        item_count: numItems,
+        category_count: numCategories
+    });
 })
 
 exports.item_details = asyncHandler(async (req, res, next) => {
@@ -106,16 +113,74 @@ exports.item_delete_get = asyncHandler(async(req, res, next) =>{
     const item = await Item.findById(req.params.id).populate("category").exec();
 
     if(item == null){
-        res.redirect("home/item")
+        res.redirect("home/item/get")
     }
 
-    res.render(item_delete, {
+    res.render("item_delete", {
         title: item.name,
         item: item
     })
 })
 
 exports.item_delete_post = asyncHandler(async(req, res, next) =>{
+    //also removes item from the category show it won't show up in the category section
     await Item.findByIdAndDelete(req.body.itemid);
-    res.redirect("/home/item");
+    res.redirect("/home/item/get");
+})
+
+exports.item_update_get = asyncHandler(async(req, res, next) =>{
+    const [item, allCategories] = await Promise.all([
+        Item.findById(req.params.id).populate("category").exec(),
+        Category.find().sort({ family_name: 1 }).exec()
+    ])  
+
+    res.render("item_form", {
+        title: "Update Item",
+        item: item,
+        categories: allCategories,
+    })
+})
+
+exports.item_update_post = asyncHandler(async(req, res, next) =>{
+    //checks for user input 
+    body("itemName", "Name must not be empty.")
+        .trim()
+        .isLength({ min: 1 })
+        .escape(),
+    body("description", "Description must not be empty.")
+        .trim()
+        .isLength({ min: 1 })
+        .escape(),
+    body("category", "Category must not be empty.")
+        .trim()
+        .isLength({ min: 1 })
+        .escape(),
+    body("stock", "Stock amount must not be empty")
+        .trim()
+        .isLength({ min: 1 })
+        .escape()
+    
+    const errors = validationResult(req);
+    const item = new Item({
+        _id: req.params.id, // This is required, or a new ID will be assigned!
+        name: req.body.itemName,
+        description: req.body.description,
+        category: req.body.category,
+        stock: req.body.stock
+    });
+
+    if (!errors.isEmpty()) {
+        // There are errors. Render the form again with sanitized values and error messages.
+        res.render('item_form', {
+            title: 'Update Item',
+            item: item,
+            errors: errors.array()
+        });
+        return;
+    } else {
+        // Data from form is valid. Update the record.
+        const updatedItem = await Item.findByIdAndUpdate(req.params.id, item, {});
+        // Redirect to author detail page.
+        res.redirect(updatedItem.url);
+    }
 })

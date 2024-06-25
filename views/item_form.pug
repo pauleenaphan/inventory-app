@@ -6,26 +6,22 @@ block content
     form(method="POST")
         div.formContainer
             label(for="name") Name of Item: 
-            input(type="text" placeholder="Name of Item" name="itemName" required)
+            input(type="text" placeholder="Name of Item" name="itemName" required value=(item === undefined ? "" : item.name))
         div.formContainer
             label(for="description") Description: 
-            textarea(placeholder="Description" name="description" required)
+            textarea(placeholder="Description" name="description" required)= item === undefined ? "" : item.description
         div.formContainer
-            label(for="category") Category: 
+            label(for="category") Category:
             select(name="category" required)
-                option(value="") Select a category 
-                    for category in categories 
-                        if item 
-                            //if the form is used for editing an item then the current category is selected
-                            if item._id.toString() === item.category._id.toString()
-                                option(value=category._id selected) #{category.name}
-                            else 
-                                option(value=category._id) #{category.name}
-                        else 
-                            option(value=category._id) #{category.name}
+                // Dynamically create options for each category
+                if categories
+                    each category in categories
+                        option(value=category._id selected=(item && item.category && item.category.toString() === category._id.toString()))= category.name
+                else
+                    option(value="" disabled selected) No categories available
         div.formContainer
             label(for="stock") Stock Amount: 
-            textarea(placeholder="Stock" name="stock" required)
+            input(placeholder="Stock" name="stock" required value=(item === undefined ? "" : item.stock))
         button.btn.btn-primary(type='submit') Submit
 
     if errors 
