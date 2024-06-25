@@ -1,23 +1,23 @@
 extends layout 
 
 block content 
-    h1= title 
+    div.page
+        h1= title 
+        if item
+            p Description: 
+                | #{item.description}
 
-    if item
-        p Description: 
-            | #{item.description}
+            p Category: 
+                | #{item.category.name}
 
-        p Category: 
-            | #{item.category.name}
+            p In Stock: 
+                | #{item.stock}
 
-        p In Stock: 
-            | #{item.stock}
+            hr
+            p.updatebtn
+                a(href=item.url+'/update') Update Item
+            p.deletebtn
+                a(href=item.url+'/delete') Delete Item 
 
-        hr
-        p 
-            a(href=item.url+'/update') Update Item
-        p 
-            a(href=item.url+'/delete') Delete Item 
-
-    else 
-        p This item does not exist
+        else 
+            p This item does not exist

@@ -1,23 +1,24 @@
 extends layout 
 
 block content
-    h1= title 
+    div.page
+        h1= title 
 
-    if category 
-        p Description: 
-            | #{category.description} 
-    
-        h2 Items in this category 
-        if items.length 
-            ul 
-                each item in items 
-                    li 
-                        a(href=item.url) #{item.name} 
-        else 
-            p There are no items in this category
+        if category 
+            p Description: 
+                | #{category.description} 
         
-        hr
-        p 
-            a(href=category.url+'/update') Update Category
-        p 
-            a(href=category.url+'/delete') Delete Category
+            h2 Items in this category 
+            if items.length 
+                ul 
+                    each item in items 
+                        li 
+                            a(href=item.url) #{item.name} 
+            else 
+                p There are no items in this category
+            
+            hr
+            p.updatebtn
+                a(href=category.url+'/update') Update Category
+            p.deletebtn
+                a(href=category.url+'/delete') Delete Category

@@ -1,15 +1,19 @@
 body {
-  font: 14px "Lucida Grande", Helvetica, Arial, sans-serif;
+  font-family: 'Roboto', sans-serif;
   margin: 0;
 }
 
-ul, li{
-  list-style-type: none;
+*{
+  font-family: 'Roboto', sans-serif;
 }
 
+/* ul, li{
+  list-style-type: none;
+} */
+
 a{
-  text-decoration: none;
   color: black;
+  text-decoration: none;
 }
 
 /* layout */
@@ -17,16 +21,88 @@ nav{
   background-color: rgba(198, 191, 96, 0.37);
   display: flex;
   flex-direction: row;
-  justify-content: space-around;
-  padding: 20px;
   font-size: 20px;
   font-weight: bold;
+  justify-content: space-around;
+  padding: 20px;
 }
 
-nav li a{
+nav li{
   color: black;
+  list-style-type: none;
 }
 
 nav li a:hover{
   color: gray;
 }
+
+/* whole page on each section */
+.page{
+  padding: 50px;
+}
+
+/* container wherever items are being listed */
+.listContainer{
+  font-size: 20px;
+  
+}
+
+.listContainer a:hover{
+  color: blue;
+}
+
+/* update, delete, submit buttons */
+.updatebtn, .deletebtn, .submitbtn{
+  border-radius: 10px;
+  padding: 10px;
+  text-align: center;
+  width: 15%;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+.updatebtn{
+  background-color: rgb(115, 179, 121);
+}
+
+.updatebtn:hover{
+  background-color: rgb(69, 109, 73);
+}
+
+.deletebtn{
+  background-color: rgb(230, 87, 87);
+}
+
+.deletebtn:hover{
+  background-color: rgb(158, 63, 63);
+}
+
+/* forms */
+.formContainer{
+  display: flex;
+  flex-direction: column;
+  width: 40%;
+  padding-bottom: 15px;
+}
+
+.formContainer label{
+  font-size: 18px;
+  padding-bottom: 5px;
+}
+
+input, textarea, select{
+  background-color: rgb(218, 215, 215);
+  padding: 10px;
+  border-radius: 10px;
+  border: solid 2px rgb(145, 144, 144);
+}
+
+.submitbtn{
+  border: none;
+  background-color: cornflowerblue;
+}
+
+.submitbtn:hover{
+  background-color: rgb(73, 108, 173);
+}
+

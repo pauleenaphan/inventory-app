@@ -1,11 +1,12 @@
 extends layout
 
 block content
-  h1= title
-  p This is a simple inventory mangement webapp created using express.js 
-  p Users can create, view, delete, and update items/categories
+  div.page
+    h1= title
+    p This is a simple inventory mangement webapp created using express.js 
+    p Users can create, view, delete, and update items/categories
 
-  p 
-    strong Total number of items: #{item_count} 
-  p 
-    strong Total number of Categories: #{category_count}
+    p 
+      strong Total number of items: #{item_count} 
+    p 
+      strong Total number of Categories: #{category_count}
